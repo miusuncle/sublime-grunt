@@ -3,7 +3,7 @@ import sublime_plugin
 import os
 import subprocess
 import json
-from hashlib import sha1 
+from hashlib import sha1
 
 package_name = "Grunt"
 package_url = "https://github.com/tvooo/sublime-grunt"
@@ -57,7 +57,7 @@ class GruntRunner(object):
                json_data.close()
         self.callcount += 1
 
-        if self.callcount == 1: 
+        if self.callcount == 1:
             return self.run_expose()
 
         if data is None:
@@ -69,6 +69,7 @@ class GruntRunner(object):
         # Load gruntfile paths from config
         self.folders = get_grunt_file_paths()
         self.grunt_files = []
+
         for f in self.window.folders():
             self.folders.append(f)
 
@@ -87,6 +88,9 @@ class GruntRunner(object):
             sublime.error_message("Gruntfile.js or Gruntfile.coffee not found!")
 
     def choose_file(self, file):
+        #fix quick panel was cancelled
+        if (file == -1): return
+
         self.wd = os.path.dirname(self.grunt_files[file])
         self.chosen_gruntfile = self.grunt_files[file]
 
@@ -105,7 +109,7 @@ class GruntRunner(object):
 def hashfile(filename):
     with open(filename, mode='rb') as f:
         filehash = sha1()
-        content = f.read();
+        content = f.read()
         filehash.update(str("blob " + str(len(content)) + "\0").encode('UTF-8'))
         filehash.update(content)
         return filehash.hexdigest()
@@ -135,7 +139,7 @@ def get_env_with_exec_args_path():
     env = os.environ.copy()
     settings = sublime.load_settings('SublimeGrunt.sublime-settings')
     if settings:
-        exec_args = settings.get('exec_args')        
+        exec_args = settings.get('exec_args')
         if exec_args:
             path = str(exec_args.get('path', ''))
             if path:
